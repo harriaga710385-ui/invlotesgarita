@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Control de lotes - Campestre La Garita</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Expanded:wght@700;800&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.25rem; }
+
+      :root{
+        color-scheme: light dark;
+        --bg:#eef3ec;
+        --bg-soft:#e3ecdf;
+        --surface:#ffffff;
+        --surface-2:#f6f8f4;
+        --ink:#14261c;
+        --ink-soft:#43584b;
+        --ink-faint:#718276;
+        --line:#d5dfd2;
+        --line-strong:#b9cbb3;
+        --brand:#163832;
+        --brand-2:#1e4d3a;
+        --brand-ink:#f3efe3;
+        --gold:#b8892e;
+        --gold-bright:#d4a94c;
+        --gold-soft:#f7ead0;
+
+        --disp-bg:#e2f1e1;
+        --disp-border:#57a773;
+        --disp-border-strong:#2e7d46;
+        --disp-dot:#1f8a4a;
+        --disp-ink:#14532d;
+        --disp-badge:#1f8a4a;
+
+        --apar-bg:#fdf3cf;
+        --apar-border:#e3b93e;
+        --apar-border-strong:#b8860b;
+        --apar-dot:#d97706;
+        --apar-ink:#713f12;
+        --apar-badge:#b45309;
+
+        --vend-bg:#fde4e1;
+        --vend-border:#ef8a83;
+        --vend-border-strong:#c93a32;
+        --vend-dot:#dc2626;
+        --vend-ink:#7f1d1d;
+        --vend-badge:#c22e28;
+
+        --shadow:0 1px 2px rgba(20,38,28,.06),0 8px 24px -12px rgba(20,38,28,.18);
+        --shadow-lg:0 24px 60px -18px rgba(10,25,17,.45);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1712;
+          --bg-soft:#122019;
+          --surface:#16241b;
+          --surface-2:#1a2b20;
+          --ink:#eef3ea;
+          --ink-soft:#b9c9ba;
+          --ink-faint:#8ba08e;
+          --line:#2a3d2f;
+          --line-strong:#3a5340;
+          --brand:#0c2218;
+          --brand-2:#143527;
+          --gold:#d4a94c;
+          --gold-bright:#ecd08a;
+          --gold-soft:#2c2413;
+
+          --disp-bg:#173325;
+          --disp-border:#2f6b47;
+          --disp-border-strong:#4caf7d;
+          --disp-dot:#4ade80;
+          --disp-ink:#bbf7d0;
+          --disp-badge:#4ade80;
+
+          --apar-bg:#33270e;
+          --apar-border:#7a5c14;
+          --apar-border-strong:#e3b93e;
+          --apar-dot:#fbbf24;
+          --apar-ink:#fde68a;
+          --apar-badge:#fbbf24;
+
+          --vend-bg:#3a1d1a;
+          --vend-border:#7c3530;
+          --vend-border-strong:#ef8a83;
+          --vend-dot:#f87171;
+          --vend-ink:#fecaca;
+          --vend-badge:#f87171;
+
+          --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px -12px rgba(0,0,0,.5);
+        }
+      }
+
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+        -webkit-font-smoothing:antialiased;
+      }
+      a{color:inherit}
+      button{font:inherit;cursor:pointer}
+      input,select{font:inherit}
+
+      .wrap{max-width:1240px;margin:0 auto;padding:0 16px 64px}
+
+      /* ---------- Header ---------- */
+      header.hero{
+        background:linear-gradient(160deg,var(--brand) 0%,var(--brand-2) 78%);
+        color:var(--brand-ink);
+        border-bottom:3px solid var(--gold-bright);
+      }
+      .hero-inner{max-width:1240px;margin:0 auto;padding:26px 16px 22px}
+      .hero-top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between}
+      .hero h1{
+        font-family:"Archivo Expanded","Archivo",sans-serif;
+        font-size:clamp(1.45rem,4.5vw,2.3rem);
+        line-height:1.08;margin:0;letter-spacing:.01em;font-weight:800;
+      }
+      .hero h1 .gold{color:var(--gold-bright)}
+      .hero p.sub{margin:8px 0 0;color:#cfdcc9;font-size:.98rem;max-width:56ch;line-height:1.45}
+      .hero-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+      .btn-refresh{
+        display:inline-flex;align-items:center;gap:8px;
+        background:var(--gold-bright);color:#231a05;border:0;
+        font-weight:800;padding:10px 18px;border-radius:999px;min-height:44px;
+        box-shadow:0 6px 18px -6px rgba(0,0,0,.4);
+      }
+      .btn-refresh:hover{filter:brightness(1.06)}
+      .btn-refresh:disabled{opacity:.65;cursor:wait}
+      .btn-refresh svg{width:18px;height:18px;flex:none}
+      .btn-refresh.spinning svg{animation:spin .8s linear infinite}
+      @keyframes spin{to{transform:rotate(360deg)}}
+      .btn-sheet{
+        display:inline-flex;align-items:center;gap:8px;
+        background:transparent;color:var(--brand-ink);
+        border:1.5px solid rgba(243,239,227,.45);
+        font-weight:600;padding:10px 16px;border-radius:999px;min-height:44px;text-decoration:none;
+      }
+      .btn-sheet:hover{border-color:var(--gold-bright);color:var(--gold-bright)}
+      .hero-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:.85rem;color:#b9cdb2}
+      .hero-meta .dot-sep::before{content:"·";margin-right:18px;color:var(--gold-bright)}
+      .live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ade80;margin-right:6px;vertical-align:1px}
+      .live-dot.err{background:#f87171}
+      .live-dot.loading{background:#fbbf24}
+
+      /* ---------- Summary ---------- */
+      .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:-0px;padding-top:20px}
+      .stat{
+        background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:16px 16px 14px;box-shadow:var(--shadow);text-align:left;width:100%;
+      }
+      button.stat{transition:transform .12s ease,border-color .12s ease}
+      button.stat:hover{border-color:var(--line-strong)}
+      button.stat.active{outline:2.5px solid var(--gold);outline-offset:1px}
+      .stat .num{font-size:clamp(1.7rem,5vw,2.4rem);font-weight:900;line-height:1;letter-spacing:-.01em}
+      .stat .lbl{display:flex;align-items:center;gap:7px;margin-top:7px;font-weight:700;font-size:.86rem;color:var(--ink-soft)}
+      .stat .pct{margin-top:3px;font-size:.8rem;color:var(--ink-faint);font-weight:500}
+      .swatch{width:11px;height:11px;border-radius:3.5px;flex:none}
+      .sw-total{background:var(--brand)}
+      .sw-disp{background:var(--disp-dot)}
+      .sw-apar{background:var(--apar-dot)}
+      .sw-vend{background:var(--vend-dot)}
+      .stat-total .num{color:var(--ink)}
+      .stat-disp .num{color:var(--disp-badge)}
+      .stat-apar .num{color:var(--apar-badge)}
+      .stat-vend .num{color:var(--vend-badge)}
+
+      .segbar{display:flex;height:12px;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin-top:12px;background:var(--surface)}
+      .segbar span{display:block;height:100%;transition:width .5s ease}
+      .seg-disp{background:var(--disp-dot)}
+      .seg-apar{background:var(--apar-dot)}
+      .seg-vend{background:var(--vend-dot)}
+
+      /* ---------- Controls ---------- */
+      .controls{
+        position:sticky;top:0;z-index:30;
+        background:color-mix(in srgb,var(--bg) 88%,transparent);
+        backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+        padding:14px 0 10px;margin-top:6px;
+      }
+      .controls-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+      .search{flex:1 1 260px;position:relative}
+      .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink-faint);pointer-events:none}
+      .search input{
+        width:100%;padding:11px 40px 11px 40px;border-radius:999px;
+        border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);
+        min-height:46px;font-size:1rem;outline:none;
+      }
+      .search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
+      .search .clear{
+        position:absolute;right:5px;top:50%;transform:translateY(-50%);
+        width:36px;height:36px;border-radius:50%;border:0;background:transparent;
+        color:var(--ink-faint);font-size:1.15rem;line-height:1;display:none;align-items:center;justify-content:center;
+      }
+      .search.has-text .clear{display:inline-flex}
+      .mz-select{
+        border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);
+        border-radius:999px;padding:10px 14px;min-height:46px;font-weight:600;max-width:100%;
+      }
+      .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+      .chip{
+        border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);
+        border-radius:999px;padding:8px 15px;font-weight:700;font-size:.88rem;min-height:38px;
+        display:inline-flex;align-items:center;gap:7px;
+      }
+      .chip .n{font-weight:800;font-variant-numeric:tabular-nums}
+      .chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+      .chip[aria-pressed="true"] .n{color:var(--gold-bright)}
+      .result-line{margin-top:10px;font-size:.88rem;color:var(--ink-soft)}
+      .result-line strong{color:var(--ink)}
+
+      .mz-nav{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+      .mz-nav a{
+        text-decoration:none;font-size:.8rem;font-weight:700;color:var(--ink-soft);
+        border:1px solid var(--line);background:var(--surface);border-radius:8px;
+        padding:6px 9px;min-height:32px;display:inline-flex;align-items:center;font-variant-numeric:tabular-nums;
+      }
+      .mz-nav a:hover{border-color:var(--gold);color:var(--ink)}
+      .mz-nav a.has-vend{border-color:var(--vend-border)}
+      .mz-nav a.has-apar{border-color:var(--apar-border)}
+
+      /* ---------- Manzana sections ---------- */
+      main{margin-top:8px}
+      .mz{
+        background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        box-shadow:var(--shadow);padding:18px;margin-top:16px;scroll-margin-top:190px;
+      }
+      .mz-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
+      .mz-head h2{margin:0;font-size:1.28rem;font-weight:800;letter-spacing:.01em}
+      .mz-head h2 .mz-num{color:var(--gold);font-variant-numeric:tabular-nums}
+      .mz-counts{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
+      .mz-counts span{font-size:.78rem;font-weight:700;border-radius:999px;padding:4px 10px;display:inline-flex;gap:5px;align-items:center}
+      .c-total{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line)}
+      .c-disp{background:var(--disp-bg);color:var(--disp-ink)}
+      .c-apar{background:var(--apar-bg);color:var(--apar-ink)}
+      .c-vend{background:var(--vend-bg);color:var(--vend-ink)}
+
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+      .lot{
+        border-radius:12px;border:1.5px solid;padding:11px 11px 10px;text-align:left;width:100%;
+        display:flex;flex-direction:column;gap:2px;min-height:96px;position:relative;
+        transition:transform .1s ease;
+      }
+      .lot:hover{transform:translateY(-2px)}
+      .lot:focus-visible{outline:2.5px solid var(--gold);outline-offset:2px}
+      .lot .lot-top{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+      .lot .lot-num{font-size:1.32rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+      .lot .lot-num small{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75;display:block;margin-bottom:2px}
+      .lot .m2{font-size:.86rem;font-weight:600;font-variant-numeric:tabular-nums}
+      .lot .m2.missing{font-weight:500;opacity:.6;font-size:.8rem}
+      .lot .estado{font-size:.7rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin-top:auto;padding-top:6px;display:flex;align-items:center;gap:5px}
+      .lot .estado::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+      .lot .nombre{
+        font-size:.8rem;font-weight:700;line-height:1.25;
+        display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;
+      }
+      .lot-disp{background:var(--disp-bg);border-color:var(--disp-border);color:var(--disp-ink)}
+      .lot-disp .estado{color:var(--disp-badge)}
+      .lot-apar{background:var(--apar-bg);border-color:var(--apar-border);color:var(--apar-ink)}
+      .lot-apar .estado{color:var(--apar-badge)}
+      .lot-vend{background:var(--vend-bg);border-color:var(--vend-border);color:var(--vend-ink)}
+      .lot-vend .estado{color:var(--vend-badge)}
+
+      /* ---------- States ---------- */
+      .state-box{
+        background:var(--surface);border:1px solid var(--line);border-radius:18px;
+        padding:38px 22px;text-align:center;margin-top:20px;box-shadow:var(--shadow);
+      }
+      .state-box h2{margin:0 0 8px;font-size:1.25rem}
+      .state-box p{margin:0 auto;color:var(--ink-soft);max-width:52ch;line-height:1.5}
+      .state-box .btn-refresh{margin-top:18px}
+      .spinner{
+        width:42px;height:42px;border-radius:50%;margin:0 auto 16px;
+        border:4px solid var(--line);border-top-color:var(--gold);
+        animation:spin .8s linear infinite;
+      }
+      .error-box{border-color:var(--vend-border);background:var(--vend-bg)}
+      .error-box h2,.error-box p{color:var(--vend-ink)}
+      .skeleton-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-top:16px}
+      .skel{height:96px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);animation:pulse 1.3s ease-in-out infinite}
+      @keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+
+      .toast{
+        position:fixed;left:50%;bottom:22px;transform:translate(-50%,80px);z-index:60;
+        background:var(--brand);color:var(--brand-ink);border:1px solid var(--gold-bright);
+        padding:11px 18px;border-radius:999px;font-weight:700;font-size:.9rem;
+        box-shadow:var(--shadow-lg);opacity:0;transition:all .3s ease;pointer-events:none;max-width:92vw;text-align:center;
+      }
+      .toast.show{transform:translate(-50%,0);opacity:1}
+
+      footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:.84rem;line-height:1.55}
+      footer a{font-weight:600}
+
+      /* ---------- Detail dialog ---------- */
+      dialog{
+        border:1px solid var(--line-strong);border-radius:20px;padding:0;max-width:420px;width:calc(100vw - 32px);
+        background:var(--surface);color:var(--ink);box-shadow:var(--shadow-lg);
+      }
+      dialog::backdrop{background:rgba(8,18,12,.55);backdrop-filter:blur(3px)}
+      .dlg-body{padding:22px}
+      .dlg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+      .dlg-head h3{margin:0;font-size:1.35rem;font-weight:800}
+      .dlg-head h3 .gold{color:var(--gold)}
+      .dlg-close{border:0;background:var(--surface-2);border-radius:50%;width:38px;height:38px;font-size:1.1rem;color:var(--ink-soft);flex:none}
+      .dlg-badge{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 12px;margin-top:10px}
+      .dlg-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+      .b-disp{background:var(--disp-bg);color:var(--disp-ink)}
+      .b-apar{background:var(--apar-bg);color:var(--apar-ink)}
+      .b-vend{background:var(--vend-bg);color:var(--vend-ink)}
+      .dlg-rows{margin-top:16px;border-top:1px solid var(--line)}
+      .dlg-row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+      .dlg-row dt{color:var(--ink-faint);font-weight:600}
+      .dlg-row dd{margin:0;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+      .dlg-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+      .btn-copy{
+        flex:1;background:var(--brand);color:var(--brand-ink);border:0;border-radius:12px;
+        padding:12px 16px;font-weight:800;min-height:46px;
+      }
+      .btn-wa{
+        flex:1;background:#1faa55;color:#fff;border:0;border-radius:12px;
+        padding:12px 16px;font-weight:800;min-height:46px;text-decoration:none;
+        display:inline-flex;align-items:center;justify-content:center;
+      }
+
+      @media (max-width:640px){
+        .summary{grid-template-columns:repeat(2,1fr)}
+        .grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+        .skeleton-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+        .mz{padding:14px;border-radius:14px}
+        .mz-counts{margin-left:0}
+        .mz{scroll-margin-top:230px}
+        .hero-inner{padding:20px 16px 18px}
+      }
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        .lot,.segbar span{transition:none}
+        .spinner,.btn-refresh.spinning svg{animation-duration:2.5s}
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-top">
+          <div>
+            <h1>Control de lotes<br /><span class="gold">Campestre La Garita</span></h1>
+            <p class="sub">Disponibilidad en vivo para asesores. Cada cambio que se hace en la hoja de control se refleja aquí con su color: verde disponible, amarillo apartado y rojo vendido.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="btn-refresh" id="btnRefresh" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+              Actualizar
+            </button>
+            <a class="btn-sheet" href="https://docs.google.com/spreadsheets/d/12zhnl5AXFHZncJZPT2dTR03Wgu0R55pH_af-sjNAZFI/edit" target="_blank" rel="noopener">Ver hoja de control</a>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <span><span class="live-dot loading" id="liveDot"></span><span id="liveText">Cargando datos de la hoja…</span></span>
+          <span class="dot-sep" id="updatedAt">Sin actualizar todavía</span>
+          <span class="dot-sep">Actualización automática cada 60 segundos</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <!-- Resumen -->
+      <section class="summary" aria-label="Resumen de lotes">
+        <button class="stat stat-total" type="button" data-filter="todos" aria-pressed="true">
+          <div class="num" id="nTotal">–</div>
+          <div class="lbl"><span class="swatch sw-total"></span>Total de lotes</div>
+          <div class="pct" id="pTotal">37 manzanas</div>
+        </button>
+        <button class="stat stat-disp" type="button" data-filter="disponible" aria-pressed="false">
+          <div class="num" id="nDisp">–</div>
+          <div class="lbl"><span class="swatch sw-disp"></span>Disponibles</div>
+          <div class="pct" id="pDisp">—</div>
+        </button>
+        <button class="stat stat-apar" type="button" data-filter="apartado" aria-pressed="false">
+          <div class="num" id="nApar">–</div>
+          <div class="lbl"><span class="swatch sw-apar"></span>Apartados</div>
+          <div class="pct" id="pApar">—</div>
+        </button>
+        <button class="stat stat-vend" type="button" data-filter="vendido" aria-pressed="false">
+          <div class="num" id="nVend">–</div>
+          <div class="lbl"><span class="swatch sw-vend"></span>Vendidos</div>
+          <div class="pct" id="pVend">—</div>
+        </button>
+      </section>
+      <div class="segbar" id="segbar" aria-hidden="true" style="display:none">
+        <span class="seg-disp" id="segDisp" style="width:0%"></span>
+        <span class="seg-apar" id="segApar" style="width:0%"></span>
+        <span class="seg-vend" id="segVend" style="width:0%"></span>
+      </div>
+
+      <!-- Controles -->
+      <div class="controls" id="controls" style="display:none">
+        <div class="controls-row">
+          <div class="search" id="searchBox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+            <input id="q" type="search" placeholder="Buscar: lote, manzana o nombre (ej. 18-3, TOÑO)…" autocomplete="off" aria-label="Buscar por lote, manzana o nombre" />
+            <button class="clear" id="qClear" type="button" aria-label="Limpiar búsqueda">×</button>
+          </div>
+          <select class="mz-select" id="mzFilter" aria-label="Filtrar por manzana">
+            <option value="todas">Todas las manzanas</option>
+          </select>
+        </div>
+        <div class="chips" role="group" aria-label="Filtrar por estado">
+          <button class="chip" type="button" data-filter="todos" aria-pressed="true">Todos <span class="n" id="cTodos"></span></button>
+          <button class="chip" type="button" data-filter="disponible" aria-pressed="false"><span class="swatch sw-disp"></span>Disponibles <span class="n" id="cDisp"></span></button>
+          <button class="chip" type="button" data-filter="apartado" aria-pressed="false"><span class="swatch sw-apar"></span>Apartados <span class="n" id="cApar"></span></button>
+          <button class="chip" type="button" data-filter="vendido" aria-pressed="false"><span class="swatch sw-vend"></span>Vendidos <span class="n" id="cVend"></span></button>
+        </div>
+        <div class="result-line" id="resultLine" aria-live="polite"></div>
+        <nav class="mz-nav" id="mzNav" aria-label="Ir a una manzana"></nav>
+      </div>
+
+      <!-- Contenido -->
+      <main id="content">
+        <div class="state-box" id="loadingBox">
+          <div class="spinner" aria-hidden="true"></div>
+          <h2>Leyendo la hoja de control…</h2>
+          <p>Estamos cargando los lotes de Campestre La Garita directamente de la hoja de Google.</p>
+          <div class="skeleton-grid" aria-hidden="true">
+            <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
+            <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        Fuente: hoja de Google «Control de lotes - Campestre La Garita» (pestaña Hoja 1). Si un lote no trae marca de estado en la hoja, aquí se muestra como <strong>disponible</strong>. Para corregir un dato, se edita la hoja y esta página lo refleja al actualizarse.
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <dialog id="dlg" aria-labelledby="dlgTitle">
+      <div class="dlg-body">
+        <div class="dlg-head">
+          <h3 id="dlgTitle">Lote</h3>
+          <button class="dlg-close" id="dlgClose" type="button" aria-label="Cerrar">×</button>
+        </div>
+        <span class="dlg-badge" id="dlgBadge">Disponible</span>
+        <dl class="dlg-rows">
+          <div class="dlg-row"><dt>Manzana</dt><dd id="dMz">—</dd></div>
+          <div class="dlg-row"><dt>Lote</dt><dd id="dLote">—</dd></div>
+          <div class="dlg-row"><dt>Superficie</dt><dd id="dM2">—</dd></div>
+          <div class="dlg-row" id="dNombreRow"><dt id="dNombreLbl">Nombre</dt><dd id="dNombre">—</dd></div>
+        </dl>
+        <div class="dlg-actions">
+          <button class="btn-copy" id="btnCopy" type="button">Copiar datos del lote</button>
+          <a class="btn-wa" id="btnWa" href="#" target="_blank" rel="noopener">Compartir por WhatsApp</a>
+        </div>
+      </div>
+    </dialog>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var CSV_URL = "https://docs.google.com/spreadsheets/d/12zhnl5AXFHZncJZPT2dTR03Wgu0R55pH_af-sjNAZFI/gviz/tq?tqx=out:csv&sheet=Hoja%201";
+
+        var state = {
+          lots: [],
+          counts: { total: 0, disponible: 0, apartado: 0, vendido: 0 },
+          filter: "todos",
+          manzana: "todas",
+          query: "",
+          loading: false,
+          loaded: false,
+          current: null
+        };
+
+        var els = {};
+        ["btnRefresh","liveDot","liveText","updatedAt","nTotal","nDisp","nApar","nVend","pTotal","pDisp","pApar","pVend",
+         "segbar","segDisp","segApar","segVend","controls","q","qClear","searchBox","mzFilter","resultLine","mzNav",
+         "content","toast","cTodos","cDisp","cApar","cVend","dlg","dlgTitle","dlgBadge","dMz","dLote","dM2",
+         "dNombreRow","dNombreLbl","dNombre","dlgClose","btnCopy","btnWa"].forEach(function (id) { els[id] = document.getElementById(id); });
+
+        /* ---------- Utilidades ---------- */
+        function norm(s) {
+          return String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+        function pad2(n) { return String(n).padStart(2, "0"); }
+        function fmtM2(v) {
+          if (v === "" || v == null) return null;
+          var num = parseFloat(String(v).replace(",", "."));
+          if (isNaN(num)) return String(v);
+          var txt = (Math.round(num * 100) / 100).toString().replace(".", ".");
+          return txt + " m²";
+        }
+        function esc(s) {
+          return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+        var toastTimer = null;
+        function toast(msg) {
+          els.toast.textContent = msg;
+          els.toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { els.toast.classList.remove("show"); }, 3200);
+        }
+
+        /* ---------- Parser CSV (respeta comillas) ---------- */
+        function parseCSV(text) {
+          var rows = [], row = [], field = "", inQuotes = false, i, c;
+          text = String(text).replace(/^\uFEFF/, "");
+          for (i = 0; i < text.length; i++) {
+            c = text[i];
+            if (inQuotes) {
+              if (c === '"') {
+                if (text[i + 1] === '"') { field += '"'; i++; }
+                else inQuotes = false;
+              } else field += c;
+            } else if (c === '"') {
+              inQuotes = true;
+            } else if (c === ",") {
+              row.push(field); field = "";
+            } else if (c === "\n") {
+              row.push(field); field = ""; rows.push(row); row = [];
+            } else if (c !== "\r") {
+              field += c;
+            }
+          }
+          if (field !== "" || row.length) { row.push(field); rows.push(row); }
+          return rows;
+        }
+
+        function normalizeEstado(raw) {
+          var e = norm(raw).toUpperCase();
+          if (e.indexOf("VEND") === 0) return "vendido";
+          if (e.indexOf("APART") === 0) return "apartado";
+          return "disponible"; // vacío o "Disponible"
+        }
+
+        function rowsToLots(rows) {
+          if (!rows.length) return [];
+          var header = rows[0].map(function (h) { return norm(h); });
+          var iMz = header.indexOf("manzana"), iLote = header.indexOf("lote"),
+              iM2 = header.findIndex(function (h) { return h === "m2" || h.indexOf("metro") === 0; }),
+              iEst = header.indexOf("estado"), iNom = header.indexOf("nombre");
+          if (iMz < 0) iMz = 0;
+          if (iLote < 0) iLote = 1;
+          if (iM2 < 0) iM2 = 2;
+          if (iEst < 0) iEst = 3;
+          if (iNom < 0) iNom = 4;
+          var lots = [];
+          for (var r = 1; r < rows.length; r++) {
+            var row = rows[r];
+            var mz = parseInt(row[iMz], 10);
+            var loteRaw = String(row[iLote] == null ? "" : row[iLote]).trim();
+            if (isNaN(mz) || loteRaw === "") continue;
+            var loteNum = parseInt(loteRaw, 10);
+            lots.push({
+              manzana: mz,
+              lote: isNaN(loteNum) ? loteRaw : loteNum,
+              loteLabel: loteRaw,
+              m2: String(row[iM2] == null ? "" : row[iM2]).trim(),
+              estado: normalizeEstado(row[iEst]),
+              nombre: String(row[iNom] == null ? "" : row[iNom]).trim()
+            });
+          }
+          lots.sort(function (a, b) {
+            if (a.manzana !== b.manzana) return a.manzana - b.manzana;
+            var an = parseInt(a.lote, 10), bn = parseInt(b.lote, 10);
+            if (!isNaN(an) && !isNaN(bn)) return an - bn;
+            return String(a.lote).localeCompare(String(b.lote));
+          });
+          return lots;
+        }
+
+        /* ---------- Carga de datos ---------- */
+        function setLive(mode, text) {
+          els.liveDot.className = "live-dot" + (mode === "err" ? " err" : mode === "loading" ? " loading" : "");
+          els.liveText.textContent = text;
+        }
+
+        function fetchData(manual) {
+          if (state.loading) return;
+          state.loading = true;
+          els.btnRefresh.disabled = true;
+          els.btnRefresh.classList.add("spinning");
+          if (!state.loaded) setLive("loading", "Cargando datos de la hoja…");
+          else setLive("loading", "Actualizando desde la hoja…");
+
+          var url = CSV_URL + "&_cb=" + Date.now();
+          fetch(url, { cache: "no-store" })
+            .then(function (res) {
+              if (!res.ok) throw new Error("HTTP " + res.status);
+              return res.text();
+            })
+            .then(function (text) {
+              var lots = rowsToLots(parseCSV(text));
+              if (!lots.length) throw new Error("La hoja no devolvió lotes.");
+              var changed = state.loaded && JSON.stringify(lots) !== JSON.stringify(state.lots);
+              state.lots = lots;
+              state.loaded = true;
+              state.loading = false;
+              els.btnRefresh.disabled = false;
+              els.btnRefresh.classList.remove("spinning");
+              var now = new Date();
+              els.updatedAt.textContent = "Última lectura: " + now.toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }) + ", " + now.toLocaleTimeString("es-MX", { hour: "numeric", minute: "2-digit" });
+              setLive("ok", "Datos en vivo desde la hoja de Google");
+              buildManzanaOptions();
+              render();
+              if (manual) toast(changed ? "Datos actualizados: hubo cambios en la hoja." : "Ya tienes la información más reciente de la hoja.");
+            })
+            .catch(function () {
+              state.loading = false;
+              els.btnRefresh.disabled = false;
+              els.btnRefresh.classList.remove("spinning");
+              setLive("err", state.loaded ? "No se pudo actualizar; se muestran los últimos datos cargados." : "No se pudo leer la hoja de Google.");
+              if (!state.loaded) {
+                els.content.innerHTML =
+                  '<div class="state-box error-box">' +
+                  "<h2>No se pudo cargar la hoja</h2>" +
+                  "<p>Revisa tu conexión a internet e inténtalo de nuevo. La página lee la hoja «Control de lotes - Campestre La Garita» cada vez que se abre o se pulsa Actualizar.</p>" +
+                  '<button class="btn-refresh" type="button" id="btnRetry">Reintentar</button>' +
+                  "</div>";
+                var retry = document.getElementById("btnRetry");
+                if (retry) retry.addEventListener("click", function () { location.reload(); });
+              } else if (manual) {
+                toast("No se pudo actualizar. Revisa tu conexión.");
+              }
+            });
+        }
+
+        /* ---------- Render ---------- */
+        function computeCounts() {
+          var c = { total: state.lots.length, disponible: 0, apartado: 0, vendido: 0 };
+          state.lots.forEach(function (l) { c[l.estado]++; });
+          state.counts = c;
+          els.nTotal.textContent = c.total;
+          els.nDisp.textContent = c.disponible;
+          els.nApar.textContent = c.apartado;
+          els.nVend.textContent = c.vendido;
+          function pct(n) { return c.total ? Math.round((n / c.total) * 100) + "% del total" : "—"; }
+          els.pDisp.textContent = pct(c.disponible);
+          els.pApar.textContent = pct(c.apartado);
+          els.pVend.textContent = pct(c.vendido);
+          els.cTodos.textContent = "(" + c.total + ")";
+          els.cDisp.textContent = "(" + c.disponible + ")";
+          els.cApar.textContent = "(" + c.apartado + ")";
+          els.cVend.textContent = "(" + c.vendido + ")";
+          els.segbar.style.display = c.total ? "flex" : "none";
+          if (c.total) {
+            els.segDisp.style.width = (c.disponible / c.total) * 100 + "%";
+            els.segApar.style.width = (c.apartado / c.total) * 100 + "%";
+            els.segVend.style.width = (c.vendido / c.total) * 100 + "%";
+          }
+        }
+
+        function buildManzanaOptions() {
+          var seen = {};
+          state.lots.forEach(function (l) { seen[l.manzana] = true; });
+          var mzs = Object.keys(seen).map(Number).sort(function (a, b) { return a - b; });
+          var current = els.mzFilter.value || "todas";
+          els.mzFilter.innerHTML = '<option value="todas">Todas las manzanas</option>' + mzs.map(function (m) {
+            return '<option value="' + m + '">Manzana ' + pad2(m) + "</option>";
+          }).join("");
+          els.mzFilter.value = (current !== "todas" && !seen[current]) ? "todas" : current;
+          state.manzana = els.mzFilter.value;
+
+          els.mzNav.innerHTML = mzs.map(function (m) {
+            var hasV = state.lots.some(function (l) { return l.manzana === m && l.estado === "vendido"; });
+            var hasA = state.lots.some(function (l) { return l.manzana === m && l.estado === "apartado"; });
+            return '<a href="#mz-' + m + '" class="' + (hasV ? "has-vend" : hasA ? "has-apar" : "") + '">Mz ' + pad2(m) + "</a>";
+          }).join("");
+        }
+
+        function matches(l) {
+          if (state.filter !== "todos" && l.estado !== state.filter) return false;
+          if (state.manzana !== "todas" && l.manzana !== parseInt(state.manzana, 10)) return false;
+          if (!state.query) return true;
+          var q = norm(state.query);
+          var compact = q.replace(/[\s\-_]+/g, "");
+          var hay = norm(
+            "manzana " + l.manzana + " mz " + pad2(l.manzana) + " lote " + l.loteLabel + " " +
+            l.manzana + "-" + l.loteLabel + " " + l.manzana + " " + l.loteLabel + " " + l.nombre + " " + l.m2
+          );
+          var hayCompact = hay.replace(/[\s\-_]+/g, "");
+          return hay.indexOf(q) !== -1 || hayCompact.indexOf(compact) !== -1;
+        }
+
+        var ESTADO_TXT = { disponible: "Disponible", apartado: "Apartado", vendido: "Vendido" };
+
+        function lotCard(l) {
+          var m2 = fmtM2(l.m2);
+          var nombreHtml = (l.estado !== "disponible" && l.nombre)
+            ? '<span class="nombre">' + esc(l.nombre) + "</span>" : "";
+          return '<button type="button" class="lot lot-' + l.estado.slice(0, 4) + '" data-mz="' + l.manzana + '" data-lote="' + esc(l.loteLabel) + '" aria-label="Manzana ' + pad2(l.manzana) + ", lote " + esc(l.loteLabel) + ", " + ESTADO_TXT[l.estado] + '">' +
+            '<span class="lot-top"><span class="lot-num"><small>Lote</small>' + esc(l.loteLabel) + "</span></span>" +
+            (m2 ? '<span class="m2">' + esc(m2) + "</span>" : '<span class="m2 missing">Sin m² en la hoja</span>') +
+            nombreHtml +
+            '<span class="estado">' + ESTADO_TXT[l.estado] + "</span>" +
+            "</button>";
+        }
+
+        function render() {
+          computeCounts();
+          els.controls.style.display = "block";
+          var filtered = state.lots.filter(matches);
+
+          // Sincronizar botones de filtro
+          document.querySelectorAll("[data-filter]").forEach(function (b) {
+            b.setAttribute("aria-pressed", b.getAttribute("data-filter") === state.filter ? "true" : "false");
+            if (b.classList.contains("stat")) b.classList.toggle("active", b.getAttribute("data-filter") === state.filter);
+          });
+
+          var parts = [];
+          if (state.query || state.filter !== "todos" || state.manzana !== "todas") {
+            parts.push("Mostrando <strong>" + filtered.length + "</strong> de <strong>" + state.counts.total + "</strong> lotes");
+          } else {
+            parts.push("<strong>" + state.counts.total + "</strong> lotes en <strong>37</strong> manzanas");
+          }
+          if (state.query) parts.push('para «' + esc(state.query) + '»');
+          els.resultLine.innerHTML = parts.join(" ");
+
+          if (!filtered.length) {
+            els.content.innerHTML =
+              '<div class="state-box"><h2>Sin resultados</h2>' +
+              "<p>Ningún lote coincide con tu búsqueda o filtro. Prueba con otro nombre, número de lote o quita el filtro de estado.</p>" +
+              '<button class="btn-refresh" type="button" id="btnClearFilters">Ver todos los lotes</button></div>';
+            var cf = document.getElementById("btnClearFilters");
+            if (cf) cf.addEventListener("click", clearFilters);
+            return;
+          }
+
+          var byMz = {};
+          filtered.forEach(function (l) { (byMz[l.manzana] = byMz[l.manzana] || []).push(l); });
+          var html = Object.keys(byMz).map(Number).sort(function (a, b) { return a - b; }).map(function (m) {
+            var items = byMz[m];
+            var all = state.lots.filter(function (l) { return l.manzana === m; });
+            var cd = all.filter(function (l) { return l.estado === "disponible"; }).length;
+            var ca = all.filter(function (l) { return l.estado === "apartado"; }).length;
+            var cv = all.filter(function (l) { return l.estado === "vendido"; }).length;
+            var counts =
+              '<span class="c-total">' + all.length + " lotes</span>" +
+              '<span class="c-disp">' + cd + " disp.</span>" +
+              (ca ? '<span class="c-apar">' + ca + " apart.</span>" : "") +
+              (cv ? '<span class="c-vend">' + cv + " vend.</span>" : "");
+            return '<section class="mz" id="mz-' + m + '"><div class="mz-head"><h2>Manzana <span class="mz-num">' + pad2(m) + '</span></h2><div class="mz-counts">' + counts + '</div></div><div class="grid">' +
+              items.map(lotCard).join("") + "</div></section>";
+          }).join("");
+          els.content.innerHTML = html;
+
+          els.content.querySelectorAll(".lot").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              var mz = parseInt(btn.getAttribute("data-mz"), 10);
+              var lt = btn.getAttribute("data-lote");
+              var found = state.lots.find(function (l) { return l.manzana === mz && String(l.loteLabel) === String(lt); });
+              if (found) openDetail(found);
+            });
+          });
+        }
+
+        function clearFilters() {
+          state.filter = "todos";
+          state.manzana = "todas";
+          state.query = "";
+          els.q.value = "";
+          els.searchBox.classList.remove("has-text");
+          els.mzFilter.value = "todas";
+          render();
+        }
+
+        /* ---------- Detalle ---------- */
+        function openDetail(l) {
+          state.current = l;
+          els.dlgTitle.innerHTML = 'Manzana <span class="gold">' + pad2(l.manzana) + "</span> · Lote " + esc(l.loteLabel);
+          els.dlgBadge.textContent = ESTADO_TXT[l.estado];
+          els.dlgBadge.className = "dlg-badge b-" + l.estado.slice(0, 4);
+          els.dMz.textContent = pad2(l.manzana);
+          els.dLote.textContent = l.loteLabel;
+          var m2 = fmtM2(l.m2);
+          els.dM2.textContent = m2 || "Sin dato en la hoja";
+          if (l.estado !== "disponible" && l.nombre) {
+            els.dNombreRow.style.display = "flex";
+            els.dNombreLbl.textContent = l.estado === "vendido" ? "Compró" : "Apartó";
+            els.dNombre.textContent = l.nombre;
+          } else if (l.estado !== "disponible") {
+            els.dNombreRow.style.display = "flex";
+            els.dNombreLbl.textContent = l.estado === "vendido" ? "Compró" : "Apartó";
+            els.dNombre.textContent = "Sin nombre en la hoja";
+          } else {
+            els.dNombreRow.style.display = "none";
+          }
+          var txt = detailText(l);
+          els.btnWa.href = "https://wa.me/?text=" + encodeURIComponent(txt);
+          if (typeof els.dlg.showModal === "function") els.dlg.showModal();
+        }
+        function detailText(l) {
+          var m2 = fmtM2(l.m2);
+          var lines = [
+            "Campestre La Garita",
+            "Manzana " + pad2(l.manzana) + " · Lote " + l.loteLabel,
+            "Estado: " + ESTADO_TXT[l.estado],
+            "Superficie: " + (m2 || "sin dato en la hoja")
+          ];
+          if (l.estado !== "disponible" && l.nombre) {
+            lines.push((l.estado === "vendido" ? "Compró: " : "Apartó: ") + l.nombre);
+          }
+          return lines.join("\n");
+        }
+
+        /* ---------- Eventos ---------- */
+        els.btnRefresh.addEventListener("click", function () { fetchData(true); });
+
+        document.querySelectorAll("[data-filter]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            state.filter = b.getAttribute("data-filter");
+            render();
+          });
+        });
+
+        var debounce = null;
+        els.q.addEventListener("input", function () {
+          els.searchBox.classList.toggle("has-text", !!els.q.value);
+          clearTimeout(debounce);
+          debounce = setTimeout(function () { state.query = els.q.value; render(); }, 140);
+        });
+        els.qClear.addEventListener("click", function () {
+          els.q.value = ""; state.query = "";
+          els.searchBox.classList.remove("has-text");
+          render(); els.q.focus();
+        });
+        els.mzFilter.addEventListener("change", function () {
+          state.manzana = els.mzFilter.value;
+          render();
+        });
+
+        els.dlgClose.addEventListener("click", function () { els.dlg.close(); });
+        els.dlg.addEventListener("click", function (e) { if (e.target === els.dlg) els.dlg.close(); });
+        els.btnCopy.addEventListener("click", function () {
+          if (!state.current) return;
+          var txt = detailText(state.current);
+          function done() { toast("Datos del lote copiados."); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(done).catch(function () { fallbackCopy(txt); done(); });
+          } else { fallbackCopy(txt); done(); }
+        });
+        function fallbackCopy(txt) {
+          var ta = document.createElement("textarea");
+          ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand("copy"); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+
+        /* ---------- Arranque y auto-actualización ---------- */
+        fetchData(false);
+        setInterval(function () {
+          if (!document.hidden) fetchData(false);
+        }, 60000);
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden && state.loaded) fetchData(false);
+        });
+      })();
+    </script>
+  </body>
+</html>
